@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Birdhouse 🪶
 
-## Getting Started
+Marketing website for **Birdhouse Shelter** — PGs, hostels, co-living, rentals
+and co-working spaces across Gurgaon, Delhi, Punjab & Jaipur.
 
-First, run the development server:
+Built with **Next.js 16 (App Router) + TypeScript + Tailwind CSS v4**.
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # then fill in your Resend key (optional for dev)
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Other scripts:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build   # production build
+npm run start   # serve the production build
+npm run lint    # eslint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Contact / lead form
 
-## Learn More
+The hero "Request A Call Back" form and the contact-page form both POST to
+`/api/lead` (`app/api/lead/route.ts`), which emails the lead via
+[Resend](https://resend.com) (`lib/email.ts`).
 
-To learn more about Next.js, take a look at the following resources:
+- Set `RESEND_API_KEY` in `.env.local` to send real emails.
+- **Without a key**, submissions are validated and logged to the server console
+  (`delivered: false`) — handy for local development.
+- `LEAD_TO_EMAIL` controls where leads are delivered (default
+  `hello@birdhouse.co.in`); `LEAD_FROM_EMAIL` must be a domain verified in Resend.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/                 routes (home, about, contact, broker, blogs, cities, properties, legal)
+  api/lead/route.ts  lead submission endpoint
+components/
+  layout/            Header, Footer, MobileNav
+  home/              homepage sections
+  property/          PropertyCard, PropertyExplorer
+  forms/             LeadForm (react-hook-form + zod)
+  ui/                Button, Section, Badge, Field, Reveal
+lib/
+  data/              seed content — properties, categories, blogs, FAQs, site info, nav
+  email.ts           Resend client
+  leadSchema.ts      shared zod validation
+```
 
-## Deploy on Vercel
+## Brand
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Token        | Value     |
+|--------------|-----------|
+| Primary      | `#0F766E` (teal) |
+| Primary dark | `#134E4A` |
+| Accent       | `#F59E0B` (amber) |
+| Ink          | `#0F172A` |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Defined as Tailwind v4 theme tokens in `app/globals.css`
+(`bg-primary`, `text-accent`, etc.).
+
+## To customise / extend
+
+- **Logo:** replace the SVG mark in `components/Logo.tsx`.
+- **Property images:** cards currently use branded gradient placeholders. Add an
+  `image` field to `lib/data/properties.ts` and render it in
+  `components/property/PropertyCard.tsx` with `next/image`.
+- **Inventory & blogs:** edit the seed files in `lib/data/` — pages, sitemap and
+  filters update automatically.

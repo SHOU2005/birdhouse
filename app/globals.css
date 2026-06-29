@@ -1,26 +1,82 @@
 @import "tailwindcss";
 
+@theme {
+  /* Brand palette — Birdhouse petrol blue (matches birdhouse.co.in) */
+  --color-primary: #15658d;
+  --color-primary-dark: #0f4a68;
+  --color-primary-light: #2f86b3;
+  --color-primary-50: #eaf3f8;
+  --color-primary-100: #cfe3ef;
+
+  /* Lighter brand blue used for subtle highlights (kept in-family) */
+  --color-accent: #2f86b3;
+  --color-accent-dark: #24698f;
+  --color-accent-light: #62a8cb;
+
+  --color-ink: #161e2d;
+  --color-muted: #5c6368;
+  --color-surface: #f7f7f7;
+  --color-line: #e4e4e4;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 4px 24px -8px rgb(15 23 42 / 0.12);
+  --shadow-card-hover: 0 12px 40px -12px rgb(15 118 110 / 0.25);
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  border-color: var(--color-line);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Utility helpers */
+.container-bh {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .container-bh {
+    padding-inline: 2rem;
+  }
+}
+
+::selection {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* Hide scrollbar for horizontal carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
