@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronDown, Phone } from "lucide-react";
-import Logo from "@/components/Logo";
+import AnimatedLogo from "@/components/AnimatedLogo";
 import { Button } from "@/components/ui/Button";
 import { mainNav } from "@/lib/data/nav";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ export default function Header({ phone }: { phone: string }) {
       )}
     >
       <div className="container-bh flex h-18 items-center justify-between py-3">
-        <Logo />
+        <AnimatedLogo />
 
         <nav className="hidden items-center gap-1 lg:flex">
           {mainNav.map((item) => {

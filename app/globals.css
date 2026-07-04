@@ -80,3 +80,32 @@ h4 {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* --- Header logo: a bird flies in and lands on the logo on first load --- */
+@keyframes bh-bird-fly {
+  0%   { transform: translate(-150px, -80px) rotate(-18deg) scale(0.6); opacity: 0; }
+  12%  { opacity: 1; }
+  55%  { transform: translate(28px, -44px) rotate(10deg) scale(1); opacity: 1; }
+  78%  { transform: translate(-3px, 7px) rotate(-6deg) scale(1); opacity: 1; }
+  100% { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; }
+}
+@keyframes bh-bird-flap {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(0.5); }
+}
+.bh-bird {
+  animation: bh-bird-fly 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.bh-bird__wings {
+  transform-origin: 50% 50%;
+  animation: bh-bird-flap 0.18s ease-in-out 7;
+}
+/* After landing, fade the animated bird into the static logo bird. */
+.bh-bird--out {
+  animation: none !important;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bh-bird { display: none; }
+}
