@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Section, Container, SectionHeading } from "@/components/ui/Section";
-import { faqs } from "@/lib/data/content";
+import type { Faq } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
 
-export default function FAQ() {
+export default function FAQ({ faqs }: { faqs: Faq[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (

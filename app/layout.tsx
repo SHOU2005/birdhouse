@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingActions from "@/components/FloatingActions";
+import { getSite } from "@/lib/store/content";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -50,21 +51,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const site = await getSite();
+
   return (
     <html
       lang="en"
       className={`${inter.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-ink">
-        <Header />
+        <Header phone={site.phonePrimary} />
         <main className="flex-1">{children}</main>
         <Footer />
-        <FloatingActions />
+        <FloatingActions whatsapp={site.whatsapp} />
       </body>
     </html>
   );

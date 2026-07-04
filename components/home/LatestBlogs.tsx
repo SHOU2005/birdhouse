@@ -2,12 +2,11 @@ import { Section, Container, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import BlogCard from "@/components/BlogCard";
-import { blogs } from "@/lib/data/blogs";
+import { getBlogs } from "@/lib/store/content";
 
-export default function LatestBlogs() {
-  const latest = [...blogs]
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
-    .slice(0, 3);
+export default async function LatestBlogs() {
+  const blogs = await getBlogs(); // already sorted newest-first
+  const latest = blogs.slice(0, 3);
 
   return (
     <Section className="bg-surface">

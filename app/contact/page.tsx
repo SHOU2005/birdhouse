@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import { Section, Container } from "@/components/ui/Section";
 import LeadForm from "@/components/forms/LeadForm";
-import { site } from "@/lib/data/site";
+import { getSite } from "@/lib/store/content";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -11,32 +11,33 @@ export const metadata: Metadata = {
     "Get in touch with Birdhouse — request a call back, visit our Gurugram office, or call 8448040101 to find your perfect accommodation.",
 };
 
-const details = [
-  {
-    Icon: MapPin,
-    label: "Visit Us",
-    value: site.address,
-  },
-  {
-    Icon: Phone,
-    label: "Call Us",
-    value: `${site.phonePrimary}, ${site.phoneSecondary}`,
-    href: `tel:${site.phonePrimary}`,
-  },
-  {
-    Icon: Mail,
-    label: "Email Us",
-    value: site.email,
-    href: `mailto:${site.email}`,
-  },
-  {
-    Icon: Clock,
-    label: "Working Hours",
-    value: "Mon – Sun, 9:00 AM – 8:00 PM",
-  },
-];
+export default async function ContactPage() {
+  const site = await getSite();
+  const details = [
+    {
+      Icon: MapPin,
+      label: "Visit Us",
+      value: site.address,
+    },
+    {
+      Icon: Phone,
+      label: "Call Us",
+      value: `${site.phonePrimary}, ${site.phoneSecondary}`,
+      href: `tel:${site.phonePrimary}`,
+    },
+    {
+      Icon: Mail,
+      label: "Email Us",
+      value: site.email,
+      href: `mailto:${site.email}`,
+    },
+    {
+      Icon: Clock,
+      label: "Working Hours",
+      value: "Mon – Sun, 9:00 AM – 8:00 PM",
+    },
+  ];
 
-export default function ContactPage() {
   return (
     <>
       <PageHero

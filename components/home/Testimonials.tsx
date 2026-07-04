@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Quote, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Section, Container, SectionHeading } from "@/components/ui/Section";
-import { testimonials } from "@/lib/data/content";
+import type { Testimonial } from "@/lib/data/content";
 import { cn } from "@/lib/utils";
 
 function initials(name: string) {
@@ -14,10 +14,16 @@ function initials(name: string) {
     .join("");
 }
 
-export default function Testimonials() {
+export default function Testimonials({
+  testimonials,
+}: {
+  testimonials: Testimonial[];
+}) {
   const [index, setIndex] = useState(0);
   const total = testimonials.length;
   const go = (dir: number) => setIndex((i) => (i + dir + total) % total);
+
+  if (total === 0) return null;
 
   // show up to 3 cards starting at index
   const visible = [0, 1, 2].map((o) => testimonials[(index + o) % total]);

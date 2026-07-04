@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Section, Container, SectionHeading } from "@/components/ui/Section";
 import PropertyCard from "@/components/property/PropertyCard";
-import { getFeatured } from "@/lib/data/properties";
+import type { Property } from "@/lib/data/properties";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -17,9 +17,13 @@ const tabs = [
   { key: "co-living", label: "Co-Living" },
 ] as const;
 
-export default function FeaturedProperties() {
+export default function FeaturedProperties({
+  properties,
+}: {
+  properties: Property[];
+}) {
   const [active, setActive] = useState<string>("all");
-  const featured = getFeatured();
+  const featured = properties;
   const visible =
     active === "all" ? featured : featured.filter((p) => p.type === active);
 

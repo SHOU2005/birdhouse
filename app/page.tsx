@@ -10,22 +10,28 @@ import LatestBlogs from "@/components/home/LatestBlogs";
 import FAQ from "@/components/home/FAQ";
 import CTABand from "@/components/CTABand";
 import { OrganizationJsonLd } from "@/components/JsonLd";
+import { getFeaturedProperties, getSiteContent } from "@/lib/store/content";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [featured, siteContent] = await Promise.all([
+    getFeaturedProperties(),
+    getSiteContent(),
+  ]);
+
   return (
     <>
       <OrganizationJsonLd />
       <Hero />
       <Categories />
-      <FeaturedProperties />
+      <FeaturedProperties properties={featured} />
       <Benefits />
       <WhyChooseUs />
       <Amenities />
       <Gallery />
-      <Testimonials />
+      <Testimonials testimonials={siteContent.testimonials} />
       <CTABand />
       <LatestBlogs />
-      <FAQ />
+      <FAQ faqs={siteContent.faqs} />
     </>
   );
 }

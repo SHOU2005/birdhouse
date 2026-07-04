@@ -3,7 +3,7 @@ import PageHero from "@/components/PageHero";
 import { Section, Container } from "@/components/ui/Section";
 import BlogCard from "@/components/BlogCard";
 import { Reveal } from "@/components/ui/Reveal";
-import { blogs } from "@/lib/data/blogs";
+import { getBlogs } from "@/lib/store/content";
 
 export const metadata: Metadata = {
   title: "Blogs",
@@ -11,8 +11,8 @@ export const metadata: Metadata = {
     "Tips, guides and stories from Birdhouse — PG hunting, co-living, renting in Gurgaon & Delhi, and making the most of your new home.",
 };
 
-export default function BlogsPage() {
-  const sorted = [...blogs].sort((a, b) => (a.date < b.date ? 1 : -1));
+export default async function BlogsPage() {
+  const sorted = await getBlogs(); // newest-first
 
   return (
     <>

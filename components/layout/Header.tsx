@@ -7,11 +7,10 @@ import { ChevronDown, Phone } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/Button";
 import { mainNav } from "@/lib/data/nav";
-import { site } from "@/lib/data/site";
 import { cn } from "@/lib/utils";
 import MobileNav from "./MobileNav";
 
-export default function Header() {
+export default function Header({ phone }: { phone: string }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
@@ -97,20 +96,20 @@ export default function Header() {
 
         <div className="hidden items-center gap-3 lg:flex">
           <a
-            href={`tel:${site.phonePrimary}`}
+            href={`tel:${phone}`}
             className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-primary"
           >
             <span className="grid h-9 w-9 place-items-center rounded-full bg-primary-50 text-primary">
               <Phone className="h-4 w-4" />
             </span>
-            {site.phonePrimary}
+            {phone}
           </a>
           <Button href="/contact" variant="primary" size="sm">
             Request A Call Back
           </Button>
         </div>
 
-        <MobileNav />
+        <MobileNav phone={phone} />
       </div>
     </header>
   );

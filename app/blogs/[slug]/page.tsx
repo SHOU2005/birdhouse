@@ -6,10 +6,10 @@ import PageHero from "@/components/PageHero";
 import { Section, Container } from "@/components/ui/Section";
 import BlogCard from "@/components/BlogCard";
 import CTABand from "@/components/CTABand";
-import { blogs, getBlog } from "@/lib/data/blogs";
+import { getBlogs, getBlogBySlug } from "@/lib/store/content";
 
-export function generateStaticParams() {
-  return blogs.map((b) => ({ slug: b.slug }));
+export async function generateStaticParams() {
+  return (await getBlogs()).map((b) => ({ slug: b.slug }));
 }
 
 export async function generateMetadata({
@@ -18,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const blog = getBlog(slug);
+  const blog = await getBlogBySlug(slug);
   if (!blog) return { title: "Blog" };
   return { title: blog.title, description: blog.excerpt };
 }
@@ -37,10 +37,11 @@ export default async function BlogPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const blog = getBlog(slug);
+  const blog = await getBlogBySlug(slug);
   if (!blog) notFound();
 
-  const related = blogs.filter((b) => b.slug !== blog.slug).slice(0, 3);
+  const allBlogs = await getBlogs();
+  const related = allBlogs.filter((b) => b.slug !== blog.slug).slice(0, 3);
 
   return (
     <>

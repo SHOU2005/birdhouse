@@ -6,7 +6,7 @@ import PropertyExplorer from "@/components/property/PropertyExplorer";
 import CTABand from "@/components/CTABand";
 import { LodgingJsonLd } from "@/components/JsonLd";
 import { categories, getCategory } from "@/lib/data/categories";
-import { getByType } from "@/lib/data/properties";
+import { getPropertiesByType } from "@/lib/store/content";
 
 export function generateStaticParams() {
   return categories.map((c) => ({ type: c.slug }));
@@ -35,7 +35,7 @@ export default async function PropertyTypePage({
   const cat = getCategory(type);
   if (!cat) notFound();
 
-  const list = getByType(cat.slug);
+  const list = await getPropertiesByType(cat.slug);
 
   return (
     <>

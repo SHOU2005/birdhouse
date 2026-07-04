@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { Instagram, Facebook, Linkedin, XTwitter } from "@/components/SocialIcons";
 import Logo from "@/components/Logo";
-import { site } from "@/lib/data/site";
+import { getSite } from "@/lib/store/content";
 
 const companyLinks = [
   { label: "Home", href: "/" },
@@ -19,14 +19,15 @@ const locationLinks = [
   { label: "Gurgaon", href: "/cities/gurgaon" },
 ];
 
-const socials = [
-  { Icon: Instagram, href: site.socials.instagram, label: "Instagram" },
-  { Icon: Facebook, href: site.socials.facebook, label: "Facebook" },
-  { Icon: Linkedin, href: site.socials.linkedin, label: "LinkedIn" },
-  { Icon: XTwitter, href: site.socials.twitter, label: "X (Twitter)" },
-];
+export default async function Footer() {
+  const site = await getSite();
+  const socials = [
+    { Icon: Instagram, href: site.socials.instagram, label: "Instagram" },
+    { Icon: Facebook, href: site.socials.facebook, label: "Facebook" },
+    { Icon: Linkedin, href: site.socials.linkedin, label: "LinkedIn" },
+    { Icon: XTwitter, href: site.socials.twitter, label: "X (Twitter)" },
+  ];
 
-export default function Footer() {
   return (
     <footer className="bg-primary-dark text-white/80">
       <div className="container-bh py-16">

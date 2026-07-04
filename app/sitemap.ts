@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { categories } from "@/lib/data/categories";
-import { blogs } from "@/lib/data/blogs";
+import { getBlogs } from "@/lib/store/content";
 
 const base = "https://birdhouse.co.in";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const blogs = await getBlogs();
   const staticRoutes = [
     "",
     "/about",

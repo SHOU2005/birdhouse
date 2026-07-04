@@ -4,10 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { mainNav } from "@/lib/data/nav";
-import { site } from "@/lib/data/site";
 import { Button } from "@/components/ui/Button";
 
-export default function MobileNav() {
+export default function MobileNav({ phone }: { phone: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -75,11 +74,11 @@ export default function MobileNav() {
 
             <div className="mt-6 space-y-3 border-t border-line pt-6">
               <a
-                href={`tel:${site.phonePrimary}`}
+                href={`tel:${phone}`}
                 className="flex items-center gap-2 font-semibold text-ink"
               >
                 <Phone className="h-4 w-4 text-primary" />
-                {site.phonePrimary}
+                {phone}
               </a>
               <Button href="/contact" variant="primary" className="w-full">
                 Request A Call Back

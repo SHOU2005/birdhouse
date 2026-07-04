@@ -4,7 +4,7 @@ import PageHero from "@/components/PageHero";
 import { Section, Container } from "@/components/ui/Section";
 import PropertyExplorer from "@/components/property/PropertyExplorer";
 import CTABand from "@/components/CTABand";
-import { getByCity } from "@/lib/data/properties";
+import { getPropertiesByCity } from "@/lib/store/content";
 
 const cityMap: Record<
   string,
@@ -51,7 +51,7 @@ export default async function CityPage({
   const info = cityMap[city];
   if (!info) notFound();
 
-  const list = getByCity(info.key);
+  const list = await getPropertiesByCity(info.key);
 
   return (
     <>

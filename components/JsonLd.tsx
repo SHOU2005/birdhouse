@@ -1,6 +1,7 @@
-import { site } from "@/lib/data/site";
+import { getSite } from "@/lib/store/content";
 
-export function OrganizationJsonLd() {
+export async function OrganizationJsonLd() {
+  const site = await getSite();
   const data = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -32,7 +33,7 @@ export function OrganizationJsonLd() {
   );
 }
 
-export function LodgingJsonLd({
+export async function LodgingJsonLd({
   name,
   description,
   city,
@@ -41,6 +42,7 @@ export function LodgingJsonLd({
   description: string;
   city: string;
 }) {
+  const site = await getSite();
   const data = {
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",

@@ -1,9 +1,10 @@
 import { Phone } from "lucide-react";
 import { Container } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
-import { site } from "@/lib/data/site";
+import { getSite } from "@/lib/store/content";
 
-export default function CTABand() {
+export default async function CTABand() {
+  const site = await getSite();
   return (
     <section className="py-16">
       <Container>

@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { WhatsApp } from "@/components/SocialIcons";
-import { site } from "@/lib/data/site";
 import { cn } from "@/lib/utils";
 
-export default function FloatingActions() {
+export default function FloatingActions({ whatsapp }: { whatsapp: string }) {
   const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export default function FloatingActions() {
       </button>
 
       <a
-        href={`https://wa.me/${site.whatsapp}?text=${waText}`}
+        href={`https://wa.me/${whatsapp}?text=${waText}`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
