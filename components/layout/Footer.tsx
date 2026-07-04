@@ -7,6 +7,7 @@ import { getSite } from "@/lib/store/content";
 const companyLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
+  { label: "PG & Rentals by Locality", href: "/pg" },
   { label: "Broker Partnership Program", href: "/broker-partnership" },
   { label: "Blogs", href: "/blogs" },
   { label: "Contact Us", href: "/contact" },

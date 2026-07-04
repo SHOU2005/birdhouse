@@ -5,7 +5,7 @@ import { Section, Container } from "@/components/ui/Section";
 import PropertyExplorer from "@/components/property/PropertyExplorer";
 import CTABand from "@/components/CTABand";
 import { LodgingJsonLd } from "@/components/JsonLd";
-import { categories, getCategory } from "@/lib/data/categories";
+import { categories, getCategory, categoryKeywords } from "@/lib/data/categories";
 import { getPropertiesByType } from "@/lib/store/content";
 
 export function generateStaticParams() {
@@ -23,6 +23,8 @@ export async function generateMetadata({
   return {
     title: `${cat.name} — ${cat.tagline}`,
     description: cat.description,
+    keywords: categoryKeywords[cat.slug],
+    alternates: { canonical: `/properties/${cat.slug}` },
   };
 }
 

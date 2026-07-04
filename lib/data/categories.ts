@@ -115,3 +115,63 @@ export const categories: Category[] = [
 export function getCategory(slug: string): Category | undefined {
   return categories.find((c) => c.slug === slug);
 }
+
+// Target keywords per category (from SEO keyword research) — surfaced in each
+// property-type page's <meta keywords> and reinforced in copy.
+export const categoryKeywords: Record<PropertyType, string[]> = {
+  "student-housing": [
+    "pg in north campus",
+    "north campus pg delhi",
+    "pg in north campus delhi",
+    "student housing in north campus",
+    "best pg in north campus delhi",
+  ],
+  "girls-hostel": [
+    "girls pg in north campus",
+    "hostels for girls in north campus",
+    "best pg for girls in delhi university",
+    "girls pg in delhi",
+    "girls hostel in north campus delhi",
+  ],
+  "boys-hostel": [
+    "pg in north campus for boys",
+    "boys pg in north campus delhi",
+    "boys pg in delhi university",
+    "boys hostel in north campus",
+  ],
+  "1rk": [
+    "1rk in gurgaon",
+    "1rk fully furnished in gurgaon",
+    "1rk flat in gurgaon",
+    "1 rk for rent in gurgaon",
+  ],
+  "1bhk": [
+    "1 bhk flat on rent in gurgaon",
+    "1bhk flat in gurgaon for rent",
+    "affordable 1 bhk in gurgaon for rent",
+    "1 bhk in gurgaon",
+  ],
+  "2bhk": [
+    "2 bhk fully furnished flat for rent in gurgaon",
+    "2 bhk flat for rent in gurgaon in society",
+    "2 bhk rent in gurgaon",
+    "2 bhk in gurgaon for rent",
+  ],
+  "3bhk": [
+    "3bhk for rent in gurgaon",
+    "3 bhk flats in gurgaon for rent",
+    "3 bhk flat in gurgaon rent",
+    "3 bhk in gurgaon",
+  ],
+  "co-living": [
+    "coliving pg in gurgaon",
+    "colive pg in gurgaon",
+    "co-living in gurgaon",
+    "co living space gurgaon",
+  ],
+  "co-working": [
+    "coworking space in gurgaon",
+    "co-working space in gurgaon",
+    "office space for rent in gurgaon",
+  ],
+};

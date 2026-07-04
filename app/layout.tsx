@@ -48,7 +48,28 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://birdhouse.co.in",
     siteName: "Birdhouse",
+    locale: "en_IN",
+    images: [
+      {
+        url: "/birdhouse-logo.webp",
+        width: 1200,
+        height: 630,
+        alt: "Birdhouse — PG, Co-Living & Rentals in Gurgaon & Delhi",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Birdhouse — PG, Co-Living & Rentals in Gurgaon & Delhi",
+    description:
+      "PGs, hostels, co-living and rental flats across Gurgaon & Delhi. No brokerage, fully furnished, move-in ready.",
+    images: ["/birdhouse-logo.webp"],
+  },
+  alternates: { canonical: "/" },
+  // Set GOOGLE_SITE_VERIFICATION in the environment to verify Search Console.
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export default async function RootLayout({

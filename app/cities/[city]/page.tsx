@@ -8,19 +8,35 @@ import { getPropertiesByCity } from "@/lib/store/content";
 
 const cityMap: Record<
   string,
-  { name: string; key: "delhi" | "gurgaon"; blurb: string }
+  { name: string; key: "delhi" | "gurgaon"; blurb: string; keywords: string[] }
 > = {
   gurgaon: {
     name: "Gurgaon",
     key: "gurgaon",
     blurb:
       "Premium 1RK, 1BHK, 2BHK & 3BHK rentals, co-living and co-working spaces across Gurgaon's most connected sectors.",
+    keywords: [
+      "pg in gurgaon",
+      "hostels in gurgaon",
+      "accommodation in gurgaon",
+      "coliving pg in gurgaon",
+      "flats for rent in gurgaon",
+    ],
   },
   "new-delhi": {
     name: "New Delhi",
     key: "delhi",
     blurb:
       "Safe, comfortable PGs and student housing near DU North Campus — for girls and boys, minutes from your college.",
+    keywords: [
+      "pg in north campus",
+      "pg in vijay nagar",
+      "pg in gtb nagar for students",
+      "best pg in kamla nagar",
+      "pg in shakti nagar",
+      "pg in mukherjee nagar",
+      "hostel and pg in north campus",
+    ],
   },
 };
 
@@ -37,8 +53,10 @@ export async function generateMetadata({
   const info = cityMap[city];
   if (!info) return { title: "City" };
   return {
-    title: `Accommodation in ${info.name}`,
+    title: `PG, Hostels & Rentals in ${info.name}`,
     description: info.blurb,
+    keywords: info.keywords,
+    alternates: { canonical: `/cities/${city}` },
   };
 }
 

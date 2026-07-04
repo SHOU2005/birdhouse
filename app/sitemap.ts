@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { categories } from "@/lib/data/categories";
 import { getBlogs } from "@/lib/store/content";
+import { seoPages } from "@/lib/seo/pages";
 
 const base = "https://birdhouse.co.in";
 
@@ -12,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/contact",
     "/broker-partnership",
     "/blogs",
+    "/pg",
     "/cities/gurgaon",
     "/cities/new-delhi",
     "/privacy-policy",
@@ -35,5 +37,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...propertyRoutes, ...blogRoutes];
+  const seoRoutes = seoPages.map((p) => ({
+    url: `${base}/pg/${p.slug}`,
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticRoutes, ...propertyRoutes, ...blogRoutes, ...seoRoutes];
 }
