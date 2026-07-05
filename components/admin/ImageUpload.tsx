@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { upload } from "@vercel/blob/client";
 
+/**
+ * Single-image uploader. The file is uploaded directly from the browser to
+ * Vercel Blob (client upload → no 4.5 MB serverless limit) and the resulting
+ * URL is submitted with the form as a hidden `<input name={name}>`.
+ */
 export default function ImageUpload({
   name,
   defaultValue = "",
@@ -10,32 +16,31 @@ export default function ImageUpload({
   defaultValue?: string;
 }) {
   const [url, setUrl] = useState(defaultValue);
-  const [uploading, setUploading] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setUploading(true);
+    setBusy(true);
     setError("");
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      setUrl(data.url);
+      const result = await upload(file.name, file, {
+        access: "public",
+        handleUploadUrl: "/api/admin/upload",
+      });
+      setUrl(result.url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
-      setUploading(false);
+      setBusy(false);
       if (fileRef.current) fileRef.current.value = "";
     }
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {/* The URL is the source of truth submitted with the form. */}
       <input type="hidden" name={name} value={url} readOnly />
 
@@ -56,10 +61,10 @@ export default function ImageUpload({
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          disabled={uploading}
+          disabled={busy}
           className="rounded-lg bg-slate-800 px-3 py-2 text-sm font-medium text-white hover:bg-slate-900 disabled:opacity-60"
         >
-          {uploading ? "Uploading…" : url ? "Replace image" : "Upload image"}
+          {busy ? "Uploading…" : url ? "Replace image" : "Upload image"}
         </button>
         {url && (
           <button
@@ -70,6 +75,9 @@ export default function ImageUpload({
             Remove
           </button>
         )}
+        <span className="text-xs text-slate-400">
+          JPEG, PNG, WebP or AVIF · up to 8 MB
+        </span>
         <input
           ref={fileRef}
           type="file"
