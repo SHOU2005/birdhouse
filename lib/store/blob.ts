@@ -15,7 +15,12 @@ import { list, put, del } from "@vercel/blob";
  * error surfaced in the admin UI.
  */
 
-export const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+// Blob is usable with either a classic read-write token, or — on projects that
+// connect the store via OIDC (the current Vercel default) — the injected
+// BLOB_STORE_ID, which the SDK pairs with VERCEL_OIDC_TOKEN to authenticate.
+export const hasBlob = Boolean(
+  process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID
+);
 
 /**
  * Public base URL of the Blob store, derived from the token
