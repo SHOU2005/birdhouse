@@ -1,14 +1,41 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
 
 /**
- * Multi-image gallery uploader. Uploads each file directly from the browser to
- * Vercel Blob (client upload → no 4.5 MB serverless limit) and submits every
- * resulting URL as a repeated hidden `<input name={name}>`. The first image is
- * the cover.
+ * Multi-image gallery uploader. Each file is downscaled in the browser and
+ * POSTed to `/api/admin/upload`, which stores it on Vercel Blob (via the
+ * project's OIDC connection) and returns a public URL. Every URL is submitted
+ * as a repeated hidden `<input name={name}>`; the first image is the cover.
  */
+
+/**
+ * Shrink and re-encode an image to a web-friendly JPEG so it always lands well
+ * under the upload size limit — and so HEIC/large phone photos work too. Falls
+ * back to the original file if the browser can't decode it.
+ */
+async function downscale(file: File): Promise<Blob> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const maxDim = 1920;
+    const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+    const w = Math.round(bitmap.width * scale);
+    const h = Math.round(bitmap.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.85)
+    );
+    return blob ?? file;
+  } catch {
+    return file;
+  }
+}
 export default function ImageUpload({
   name,
   defaultValue = [],
@@ -29,18 +56,25 @@ export default function ImageUpload({
     setError("");
 
     const results = await Promise.allSettled(
-      files.map((file) =>
-        upload(file.name, file, {
-          access: "public",
-          handleUploadUrl: "/api/admin/upload",
-        })
-      )
+      files.map(async (file) => {
+        const blob = await downscale(file);
+        const fd = new FormData();
+        const base = file.name.replace(/\.[^.]+$/, "") || "image";
+        fd.append("file", blob, `${base}.jpg`);
+        const res = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: fd,
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Upload failed");
+        return data.url as string;
+      })
     );
 
     const ok: string[] = [];
     const errors: string[] = [];
     for (const r of results) {
-      if (r.status === "fulfilled") ok.push(r.value.url);
+      if (r.status === "fulfilled") ok.push(r.value);
       else errors.push(r.reason?.message || "Upload failed");
     }
     if (ok.length) setUrls((prev) => [...prev, ...ok]);
@@ -112,7 +146,7 @@ export default function ImageUpload({
           {busy ? "Uploading…" : "Upload images"}
         </button>
         <span className="text-xs text-slate-400">
-          JPEG, PNG, WebP or AVIF · up to 8 MB each · select several at once
+          JPEG, PNG, WebP or AVIF · resized automatically · select several at once
         </span>
         <input
           ref={fileRef}
