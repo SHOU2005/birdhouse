@@ -30,12 +30,27 @@ export const hasBlob = Boolean(
  * derived, in which case readJson falls back to an uncached list() lookup.
  */
 function publicBase(): string | null {
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) return null;
-  const storeId = token.split("_")[3];
+  const storeId = storeId_();
   return storeId
     ? `https://${storeId}.public.blob.vercel-storage.com`
     : null;
+}
+
+/**
+ * The store id used in the public blob hostname. Prefer BLOB_STORE_ID (the
+ * OIDC-connected store that writes actually target) so reads and writes always
+ * hit the same store; fall back to parsing it from a read-write token. Strips
+ * the `store_` prefix the SDK's normalizeStoreId also removes.
+ */
+function storeId_(): string | null {
+  const fromEnv = process.env.BLOB_STORE_ID;
+  if (fromEnv) {
+    return fromEnv.startsWith("store_")
+      ? fromEnv.slice("store_".length)
+      : fromEnv;
+  }
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  return token ? token.split("_")[3] || null : null;
 }
 
 export class BlobNotConfiguredError extends Error {

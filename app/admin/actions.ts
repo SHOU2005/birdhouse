@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/session";
 import {
@@ -99,7 +99,7 @@ export async function saveProperty(
     return { error: "Could not save. Is the Blob store configured?" };
   }
 
-  revalidateTag(TAGS.properties, "max");
+  updateTag(TAGS.properties);
   redirect("/admin/properties");
 }
 
@@ -108,7 +108,7 @@ export async function deleteProperty(formData: FormData): Promise<void> {
   const slug = String(formData.get("slug") ?? "");
   const all = await getProperties();
   await saveProperties(all.filter((p) => p.slug !== slug));
-  revalidateTag(TAGS.properties, "max");
+  updateTag(TAGS.properties);
   redirect("/admin/properties");
 }
 
@@ -154,7 +154,7 @@ export async function saveBlog(
     return { error: "Could not save. Is the Blob store configured?" };
   }
 
-  revalidateTag(TAGS.blogs, "max");
+  updateTag(TAGS.blogs);
   redirect("/admin/blogs");
 }
 
@@ -163,7 +163,7 @@ export async function deleteBlog(formData: FormData): Promise<void> {
   const slug = String(formData.get("slug") ?? "");
   const all = await getBlogs();
   await saveBlogs(all.filter((b) => b.slug !== slug));
-  revalidateTag(TAGS.blogs, "max");
+  updateTag(TAGS.blogs);
   redirect("/admin/blogs");
 }
 
@@ -225,7 +225,7 @@ export async function saveSite(
     return { error: "Could not save. Is the Blob store configured?" };
   }
 
-  revalidateTag(TAGS.site, "max");
+  updateTag(TAGS.site);
   return { ok: true };
 }
 
