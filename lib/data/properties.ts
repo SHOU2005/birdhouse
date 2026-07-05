@@ -11,7 +11,8 @@ export type Property = {
   wifi: boolean;
   housekeeping: boolean;
   occupancy: string;
-  image: string;
+  image: string; // cover image (kept for backward compatibility)
+  images?: string[]; // full gallery; images[0] mirrors `image`
   highlights: string[];
 };
 

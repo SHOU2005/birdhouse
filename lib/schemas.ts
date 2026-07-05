@@ -27,7 +27,9 @@ export const propertySchema = z.object({
   location: z.string().trim().min(1, "Location is required"),
   rentFrom: z.coerce.number().int().nonnegative("Rent must be 0 or more"),
   occupancy: z.string().trim().min(1, "Occupancy is required"),
-  image: z.string().trim().min(1, "An image is required"),
+  images: z
+    .array(z.string().trim().min(1))
+    .min(1, "Add at least one image"),
   featured: z.boolean(),
   wifi: z.boolean(),
   housekeeping: z.boolean(),

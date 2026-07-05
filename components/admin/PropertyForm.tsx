@@ -99,11 +99,16 @@ export default function PropertyForm({ property }: { property?: Property }) {
         </div>
 
         <div className="md:col-span-2">
-          <span className={label}>Image</span>
+          <span className={label}>Images (the first is the cover)</span>
           <div className="mt-1">
-            <ImageUpload name="image" defaultValue={property?.image} />
+            <ImageUpload
+              name="images"
+              defaultValue={
+                property?.images ?? (property?.image ? [property.image] : [])
+              }
+            />
           </div>
-          <FieldError errors={fe.image} />
+          <FieldError errors={fe.images} />
         </div>
 
         <div className="flex flex-wrap gap-6 md:col-span-2">

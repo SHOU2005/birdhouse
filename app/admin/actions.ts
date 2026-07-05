@@ -48,7 +48,11 @@ async function parseProperty(formData: FormData) {
     location: formData.get("location"),
     rentFrom: formData.get("rentFrom"),
     occupancy: formData.get("occupancy"),
-    image: formData.get("image"),
+    images: formData
+      .getAll("images")
+      .map(String)
+      .map((s) => s.trim())
+      .filter(Boolean),
     featured: formData.get("featured") != null,
     wifi: formData.get("wifi") != null,
     housekeeping: formData.get("housekeeping") != null,
@@ -66,7 +70,8 @@ export async function saveProperty(
   if (!parsed.success) {
     return { fieldErrors: parsed.error.flatten().fieldErrors };
   }
-  const property = parsed.data as Property;
+  // Derive the cover image (first) so existing single-image consumers keep working.
+  const property: Property = { ...parsed.data, image: parsed.data.images[0] };
   const originalSlug = String(formData.get("originalSlug") ?? "").trim();
   const isEdit = originalSlug.length > 0;
 
