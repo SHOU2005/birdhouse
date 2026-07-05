@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { saveProperty, type FormState } from "@/app/admin/actions";
 import { categories } from "@/lib/data/categories";
 import ImageUpload from "@/components/admin/ImageUpload";
@@ -10,6 +10,15 @@ import type { Property } from "@/lib/data/properties";
 function FieldError({ errors }: { errors?: string[] }) {
   if (!errors?.length) return null;
   return <p className="mt-1 text-sm text-red-600">{errors[0]}</p>;
+}
+
+/** Turn a listing name into a valid slug (matches the schema's `^[a-z0-9-]+$`). */
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 const input =
@@ -23,6 +32,11 @@ export default function PropertyForm({ property }: { property?: Property }) {
   );
   const fe = state.fieldErrors ?? {};
 
+  // Auto-fill the slug from the name until the admin edits the slug themselves
+  // (or when editing an existing listing that already has one).
+  const [slug, setSlug] = useState(property?.slug ?? "");
+  const [slugTouched, setSlugTouched] = useState(Boolean(property?.slug));
+
   return (
     <form action={action} className="space-y-6">
       {property && (
@@ -32,7 +46,15 @@ export default function PropertyForm({ property }: { property?: Property }) {
       <div className="grid gap-5 rounded-2xl bg-white p-6 shadow-sm md:grid-cols-2">
         <div className="space-y-1">
           <label className={label} htmlFor="name">Name</label>
-          <input id="name" name="name" defaultValue={property?.name} className={input} />
+          <input
+            id="name"
+            name="name"
+            defaultValue={property?.name}
+            onChange={(e) => {
+              if (!slugTouched) setSlug(slugify(e.target.value));
+            }}
+            className={input}
+          />
           <FieldError errors={fe.name} />
         </div>
 
@@ -41,7 +63,11 @@ export default function PropertyForm({ property }: { property?: Property }) {
           <input
             id="slug"
             name="slug"
-            defaultValue={property?.slug}
+            value={slug}
+            onChange={(e) => {
+              setSlugTouched(true);
+              setSlug(slugify(e.target.value));
+            }}
             placeholder="white-dove-girls-pg-vijay-nagar"
             className={input}
           />
