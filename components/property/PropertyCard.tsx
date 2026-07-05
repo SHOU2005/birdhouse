@@ -59,7 +59,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             </p>
           </div>
           <Link
-            href={`/properties/${property.type}`}
+            href={`/properties/${property.type}/${property.slug}`}
             className="inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary-dark"
           >
             View Details
