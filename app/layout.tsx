@@ -66,10 +66,13 @@ export const metadata: Metadata = {
     images: ["/birdhouse-logo.webp"],
   },
   alternates: { canonical: "/" },
-  // Set GOOGLE_SITE_VERIFICATION in the environment to verify Search Console.
-  verification: process.env.GOOGLE_SITE_VERIFICATION
-    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
-    : undefined,
+  // Google Search Console verification. Override with GOOGLE_SITE_VERIFICATION
+  // in the environment; falls back to the current verified token.
+  verification: {
+    google:
+      process.env.GOOGLE_SITE_VERIFICATION ??
+      "R91XFRQbjZvNNLwXYSBrvBMw6NTlsVE0NkiayqHq0jM",
+  },
 };
 
 export default async function RootLayout({
