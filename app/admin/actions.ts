@@ -96,7 +96,7 @@ export async function saveProperty(
     await saveProperties(next);
   } catch (err) {
     console.error("[admin] saveProperty failed:", err);
-    return { error: "Could not save. Is the Blob store configured?" };
+    return { error: "Could not save. Is the Supabase database configured?" };
   }
 
   updateTag(TAGS.properties);
@@ -151,7 +151,7 @@ export async function saveBlog(
     await saveBlogs(next);
   } catch (err) {
     console.error("[admin] saveBlog failed:", err);
-    return { error: "Could not save. Is the Blob store configured?" };
+    return { error: "Could not save. Is the Supabase database configured?" };
   }
 
   updateTag(TAGS.blogs);
@@ -222,7 +222,7 @@ export async function saveSite(
     await saveSiteContent({ ...current, ...parsed.data });
   } catch (err) {
     console.error("[admin] saveSite failed:", err);
-    return { error: "Could not save. Is the Blob store configured?" };
+    return { error: "Could not save. Is the Supabase database configured?" };
   }
 
   updateTag(TAGS.site);
@@ -233,7 +233,7 @@ export async function saveSite(
 
 export async function deleteLead(formData: FormData): Promise<void> {
   await requireAdmin();
-  const url = String(formData.get("url") ?? "");
-  if (url) await removeLead(url);
+  const id = String(formData.get("id") ?? "");
+  if (id) await removeLead(id);
   redirect("/admin/leads");
 }

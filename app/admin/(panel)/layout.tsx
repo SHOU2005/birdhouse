@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAuthed } from "@/lib/auth/session";
 import { logout } from "@/lib/auth/actions";
-import { hasBlob } from "@/lib/store/blob";
+import { hasSupabase } from "@/lib/store/supabase";
 import AdminNav from "@/components/admin/AdminNav";
 
 export default async function PanelLayout({
@@ -50,11 +50,12 @@ export default async function PanelLayout({
             <AdminNav />
           </div>
 
-          {!hasBlob && (
+          {!hasSupabase && (
             <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-              <strong>Blob store not connected.</strong> You&rsquo;re viewing the
-              built-in seed content. Edits won&rsquo;t save until a Vercel Blob
-              store is added and <code>BLOB_READ_WRITE_TOKEN</code> is set.
+              <strong>Supabase not connected.</strong> You&rsquo;re viewing the
+              built-in seed content. Edits won&rsquo;t save until{" "}
+              <code>SUPABASE_URL</code> and{" "}
+              <code>SUPABASE_SERVICE_ROLE_KEY</code> are set.
             </div>
           )}
 

@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/session";
-import { uploadFile, hasBlob } from "@/lib/store/blob";
+import { uploadFile, hasSupabase } from "@/lib/store/supabase";
 
 /**
  * Server-side listing photo upload.
  *
  * The browser POSTs the (already downscaled) image here and we forward it to
- * Vercel Blob with `put()` — which authenticates via the project's OIDC
- * connection (`BLOB_STORE_ID` + `VERCEL_OIDC_TOKEN`), so no read-write token is
- * required. Going through the server also avoids the browser→Blob CORS handshake
- * that the client-upload flow needs. The client shrinks images below the limit
- * before sending, so Vercel's ~4.5 MB request-body cap isn't hit in practice.
+ * the Supabase Storage `listings` bucket with the service-role key, so no
+ * credentials reach the browser. The client shrinks images before sending, so
+ * the request stays well under the platform body-size limit.
  */
 const MAX_BYTES = 4 * 1024 * 1024; // 4 MB — stays under Vercel's ~4.5 MB body limit
 const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/avif"];
@@ -22,11 +20,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!hasBlob) {
+  if (!hasSupabase) {
     return NextResponse.json(
       {
         error:
-          "Image storage isn't set up yet. Connect a Vercel Blob store to the project (Storage tab).",
+          "Image storage isn't set up yet. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY and create a public 'listings' bucket.",
       },
       { status: 503 }
     );
@@ -50,10 +48,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  const safeName = (file.name || "image").replace(/[^a-zA-Z0-9._-]/g, "-");
   try {
     const url = await uploadFile(
-      `listings/${safeName}`,
+      file.name || "image",
       await file.arrayBuffer(),
       file.type
     );

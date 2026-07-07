@@ -5,11 +5,12 @@ const nextConfig: NextConfig = {
   // Produces .next/standalone with server.js + minimal node_modules.
   output: "standalone",
   images: {
-    // Listing photos uploaded via the admin live on Vercel Blob.
+    // Listing photos uploaded via the admin live in Supabase Storage.
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.public.blob.vercel-storage.com",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },

@@ -1,12 +1,10 @@
 import "server-only";
-import { list, put, del } from "@vercel/blob";
-import { hasBlob } from "./blob";
-import { LEADS_PREFIX } from "./content";
+import { supabaseAdmin, hasSupabase } from "./supabase";
 import type { LeadInput } from "@/lib/leadSchema";
 
 /**
- * Lead submissions are stored one-JSON-blob-per-lead under `leads/`, so
- * concurrent form submissions never clobber each other (no read-modify-write).
+ * Lead submissions live one-row-per-lead in the `leads` table. The `data`
+ * column holds the full record so the shape can evolve without a migration.
  */
 
 export type LeadRecord = LeadInput & {
@@ -15,14 +13,14 @@ export type LeadRecord = LeadInput & {
   delivered: boolean; // whether the Resend email went out
 };
 
-export type StoredLead = LeadRecord & { url: string };
+export type StoredLead = LeadRecord;
 
-/** Persist a lead. Never throws — the public form must not fail if Blob is down. */
+/** Persist a lead. Never throws — the public form must not fail if the DB is down. */
 export async function saveLead(
   lead: LeadInput,
   delivered: boolean
 ): Promise<void> {
-  if (!hasBlob) return;
+  if (!hasSupabase) return;
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const record: LeadRecord = {
     ...lead,
@@ -32,48 +30,36 @@ export async function saveLead(
     delivered,
   };
   try {
-    await put(`${LEADS_PREFIX}${id}.json`, JSON.stringify(record, null, 2), {
-      access: "public",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      cacheControlMaxAge: 0,
-    });
+    const { error } = await supabaseAdmin()
+      .from("leads")
+      .insert({ id, data: record, created_at: record.createdAt });
+    if (error) throw error;
   } catch (err) {
     console.error("[leads] failed to persist lead:", err);
   }
 }
 
-/** All leads, newest first, each with its blob URL for deletion. */
+/** All leads, newest first. */
 export async function getLeads(): Promise<StoredLead[]> {
-  if (!hasBlob) return [];
+  if (!hasSupabase) return [];
   try {
-    const { blobs } = await list({ prefix: LEADS_PREFIX });
-    const leads = await Promise.all(
-      blobs.map(async (b) => {
-        try {
-          const res = await fetch(b.downloadUrl, { cache: "no-store" });
-          if (!res.ok) return null;
-          const record = (await res.json()) as LeadRecord;
-          return { ...record, url: b.url } satisfies StoredLead;
-        } catch {
-          return null;
-        }
-      })
-    );
-    return leads
-      .filter((l): l is StoredLead => l !== null)
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const { data, error } = await supabaseAdmin()
+      .from("leads")
+      .select("data")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []).map((row) => row.data as StoredLead);
   } catch (err) {
     console.error("[leads] failed to list leads:", err);
     return [];
   }
 }
 
-export async function deleteLead(url: string): Promise<void> {
-  if (!hasBlob) return;
+export async function deleteLead(id: string): Promise<void> {
+  if (!hasSupabase) return;
   try {
-    await del(url);
+    const { error } = await supabaseAdmin().from("leads").delete().eq("id", id);
+    if (error) throw error;
   } catch (err) {
     console.error("[leads] failed to delete lead:", err);
   }

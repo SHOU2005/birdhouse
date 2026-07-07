@@ -44,7 +44,7 @@ export default async function LeadsPage() {
                 )}
                 <DeleteButton
                   action={deleteLead}
-                  hidden={{ url: lead.url }}
+                  hidden={{ id: lead.id }}
                   confirmMessage="Delete this enquiry?"
                 />
               </div>
