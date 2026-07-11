@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingActions from "@/components/FloatingActions";
@@ -93,6 +94,7 @@ export default async function RootLayout({
         <Footer />
         <FloatingActions whatsapp={site.whatsapp} />
       </body>
+      <GoogleAnalytics gaId="G-LESHDZDVH3" />
     </html>
   );
 }
